@@ -14,9 +14,23 @@ El presente informe se estructura en base a los módulos descritos anteriormente,
 ##data
 La carpeta data está subdividida en diferentes carpetas y archivos necesarios para crear la base de datos inicial que se utilizará en el presente modelo. La descripción de cada una de ellas se describe a continuación:
 
-###activities
+###carpetas
+
+####activities
 La carpeta activities contiene dos archivos:
 
-*FinalDB_2910.xlsx: Archivo xlsx que contiene los datos para cada uno de las explotaciones tipo identificadas previamente. Dentro del archivo, existe información adicional de los datos (e.g. Unidades de medida de variables utilizadas)  
-*FinalDB_2910.gdx: Información en formato .gdx para ser utilizada por GAMS 
+* FinalDB_2910.xlsx: Archivo xlsx que contiene los datos para cada uno de las explotaciones tipo identificadas previamente. Dentro del archivo, existe información adicional de los datos (e.g. Unidades de medida de variables utilizadas)  
+* FinalDB_2910.gdx: Información en formato .gdx para ser utilizada por GAMS 
  
+####markets
+La carpeta markets contiene los archivos con datos de elasticidad de algunos cultivos como también precios a nivel de consumidor
+
+
+####sets
+Esta carpeta almacena los sets definidos en el archivo .gms 
+
+
+####supportpoints
+
+
+###archivos
