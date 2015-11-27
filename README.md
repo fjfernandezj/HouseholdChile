@@ -1,4 +1,4 @@
-###Household Model Chile (HMC)
+#Household Model Chile (HMC)
 
 El presente informe intenta explicar en detalle cada uno de los pasos realizados para desarrollar el modelo household Chile (HMC), con el principal objetivo de que su código sea entendido por otros usuarios y de esta manera el proceso de desarrollo pueda ser retroalimentado por quienes participan de este.
 
@@ -14,5 +14,5 @@ El presente informe se estructura en base a los módulos descritos anteriormente,
 ##data
 La carpeta data está subdividida en diferentes carpetas y archivos necesarios para crear la base de datos inicial que se utilizará en el presente modelo. La descripción de cada una de ellas se describe a continuación:
 
-#activities
+###activities
 La carpeta activities contiene dos archivos 
