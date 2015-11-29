@@ -63,8 +63,9 @@ parameter
    t_householdData     'Household activities data'
    t_houGdsData        'Household goods and factors data'
    t_selasticities     'supply elasticities'
-   za(eb,gds)            'pre-support points for beta parameter of LES'
-   zb(eg,gds)            'pre-support points for gamma parameter of LES'
+   t_cnsPrcs           'Consumer prices of agricultural goods'
+   za(eb,gds)          'pre-support points for beta parameter of LES'
+   zb(eg,gds)          'pre-support points for gamma parameter of LES'
 
 ;
 
@@ -75,4 +76,34 @@ $gdxin ..\data\sets\sets.gdx
 $load  hou com act sys jf fct gds
 $gdxin
 
+
+*   ---- import data (from xls to gdx)
+$call "gdxxrw.exe ..\data\activities\FinalDB_2910.xlsx o=..\data\activities\FinalDB_2910.gdx se=2 index=indexData!A3"
+$call "gdxxrw.exe ..\data\supportpoints\supportpoints.xlsx o=..\data\supportpoints\supportpoints.gdx se=2 index=indexData!A3"
+$call "gdxxrw.exe ..\data\markets\HousModel_supElast.xlsx o=..\data\markets\HousModel_supElast.gdx se=2 index=index!A3"
+$call "gdxxrw.exe ..\data\markets\Consumer_prices.xlsx o=..\data\markets\Consumer_prices.gdx se=2 index=index!A3"
+
+
+$gdxin ..\data\activities\FinalDB_2910.gdx
+$load  t_householdData t_houGdsData
+$gdxin
+
+$gdxin ..\data\supportpoints\supportpoints.gdx
+$load    za zb
+$gdxin
+
+$gdxin ..\data\markets\HousModel_supElast.gdx
+$load  t_selasticities
+$gdxin
+
+$gdxin ..\data\markets\Consumer_prices.gdx
+$load  t_cnsPrcs
+$gdxin
+
+*-------------------------------------------------------------------------------
+*
+*   Define model database
+*
+*-------------------------------------------------------------------------------
+*---- total production in  (t/h)
 
