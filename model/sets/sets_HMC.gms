@@ -99,7 +99,18 @@ fct   Factors
  wat Water
  cap Capital/
 
+
+eb  ME supports beta LES       /e1*e11/
+eg  ME supports gamma LES      /e1*e5/
+ee  ME supports mhu LES        /e1*e3/
+
+
 ;
+
+
+
+
+
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * Define aggregates
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +120,8 @@ set
 
 set
 var       'variables'             /Area,yld,prd,cons,prc,hrd_lab,fam_lab,TtlLab_Cst,
-                                  inpCst,RntCst,TtlCst,srev,gmar,consPrice,gdsCons/
+                                  inpCst,RntCst,TtlCst,srev,gmar,consPrice,gdsCons,
+                                  tot_lab,vcost,selast,prd_prc,HLab_Price/
 
 ;
 
@@ -130,10 +142,12 @@ set
 
 *---subsets of agricultural products
 grn(act) grains
-/wht,oat,ric /
+/wht,oat,ric/
+
 
 sc(act) spring crops
-/mze,cmb, gbn, chk, pot/
+/mze,cmb, pot/
+*gbn and chk no supply elasticities --> original /mze,cmb, gbn, chk, pot/
 
 sv(act) sprig vegetables
 /pea,oni,tom,mel,wtm,cuc,sqh /

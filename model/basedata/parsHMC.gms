@@ -21,6 +21,7 @@ $offtext
 * ---- DEFINING PARAMETERS FOR GME - LES function
 
 Parameter
+*--- BETA-LES Parameter
 ielas        income elasticity for agricultural food products
 jcons        Goods consumed (ton)
 jprice       Consumer prices (millions of $CLP per ton)
@@ -29,35 +30,43 @@ sb           Subsidies (millions of $CLP)
 Y_0          Initial Farm household full Income (millions of $CLP)
 bdgtshr      budget share by household-commune and good
 avs          average budget share per good per commune
-
-$ontext
-Y_0          Initial Farm household full Income ( millions of $CLP)
-consval      Consumption in monetary value -prices of good by consumed quantity of good (CLP$)-
-pm           Market price of goods and tradable factor
+za           pre-support points for beta
 Z1           Values of support points for beta
+
+*--- GAMMA-LES Parameter
+avg_hougamma average Gamma parameter by household -  average uncompressible consumption
+avg_comgamma average Gamma parameter by commune -  average uncompressible consumption
+zb           pre-support points for gamma
 Z2           Values of support points for gamma
-Z3           Values of support points for mhu
-ZM(eb,m)     Values of support points for market goods (non-agricultural goods)
-za(eb,j)     pre-support points for beta
-zb(eg,j)     pre-support points for gamma
-bdgtshr      budget share by household-commune and good
-avs          average budget share per good per commune
-avgch        average consumption of good by household
+
+*--- MHU-LES Parameter (Error term)
+Kst          Number of supports for mhu LES
 avgc         average consumption of good by commune
-std_les      sample standar deviation of consumption and expenditure in good j
-cp           Consumer price
-p_gammah     gamma parameter per household
-p_gamma      gamma parameter per commune
-Kst          Number of state of nature
-gdc          Goods consumed
+std_les      standar deviation of consumption and expenditure in good j
+Z3           Values of support points for mhu
 
 
-
+**--- Core Model Data
 tcland       Total land per commune
 thland       Total land of household f per commune
 icland       irrigable land (ha) commune
 w            Farm household weight within the commune
-phi          Risk aversion coefficient
+BETACST      Implicit cost function's Beta parameter
+ALPHACST     Implicit cost function's Alpha parameter
+labrnt       Hired labour (working days)
+labfam       Family labour (working days)
+Am           Input coefficients (input use of factor f in activity a)
+B            Initial resource endowment
+yl           economic output coefficient (yield of activiti a)
+tb           Multiplicative transaction costs of goods (buyer)
+ts           Multiplicative transaction costs of goods (seller)
+acst         Accounting costs
+avgLab       Average labour per activity and system
+avFamLab     average family labour available per household and commune
+HrdPrice     Hired labour average price (million $CLP)
+
+$ontext
+
 lab          Labor demand per hectare (man days)
 labrnt       Labor rented-in per household-commune crop and system (man days)
 B            Initial resource endowment
@@ -104,12 +113,23 @@ cpar
 
 $offtext
 
+*   ---- base year data commune------
+   yld          "crop yield (tons/h)"
+
+   x0           "crop area (2011) in ha household-commune level"
+
+   lab          "Total labour (2011) working days"
+
+   pprice       "Producer prices (millions $CLP/ton) (2011)"
+
+   selas        "supply elasticity"
+
 * model data for baseline
    p_householdData(*,*,*,*,*)   'crop management data household level'
    p_houGdsData(*,*,*,*,*)      'Goods and Factors household data'
    p_consumptionData(*,*)       'Consumption data'
    p_supplyData(*,*)            'Supply data'
 
-
+  ;
 
 

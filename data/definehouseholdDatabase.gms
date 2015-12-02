@@ -215,6 +215,8 @@ p_householdData(hou,com, act,sys,'hrd_lab')= t_householdData(hou,com,act,sys,'Hi
 p_householdData(hou,com,act,sys,'fam_lab') = t_householdData(hou,com,act,sys,'FamilyLab');
 p_householdData(hou,com,act,sys,'tot_lab') = p_householdData(hou,com, act,sys,'hrd_lab') + p_householdData(hou,com,act,sys,'fam_lab');
 
+*--------------Hired labor average cost-----------------------------------------
+p_householdData(hou,com, act,sys,'HLab_Price') = t_householdData(hou,com,act,sys,'PriceHrdLab');
 
 p_supplyData(act,'prd_prc') = sum((hou,com,sys), t_rawprices(hou,com,act,sys,'prc'))/sum((hou,com,sys), 1$t_rawprices(hou,com,act,sys,'prc'));
 p_supplyData(act,'selast') =  t_selasticities(act,'elas');
@@ -357,8 +359,6 @@ execute 'gdxxrw.exe ..\results\HouseholdChile_db_3011.gdx o=..\results\Household
 option DECIMALS=1;
 display p_householdData, p_houGdsData, p_consumptionData, p_supplyData;
 $exit
-
-
 
 
 
