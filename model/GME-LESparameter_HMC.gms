@@ -116,6 +116,7 @@ prob_E.lo(h,c,j,ee)= 0.001;
 *--------------------------------- Solving the model ------------------------------
 
 OPTION NLP = CONOPT3 ;
+
 household_GME_LES.scaleopt=1;
 eq_expfunct.scale(h,c,j) = 100000 ;
 beta_v.scale(h,c,j) = 100000 ;
@@ -124,11 +125,22 @@ gamma_v.scale(h,c,j)= 100000 ;
 eq_gamma.scale(h,c,j)= 100000 ;
 
 
-
-
 SOLVE household_GME_LES using NLP maximizing ENTRPY    ;
 *----------------------------------------------------------------------------------
 
-*gamma_v.fx(h,c,j) = gamma_v.l(h,c,j);
+parameter lespar;
 
-*SOLVE household_GME_LES using NLP maximizing ENTRPY    ;
+lespar(h,c,j,'beta')= beta_v.l(h,c,j);
+lespar(h,c,j,'gamma')= gamma_v.l(h,c,j);
+
+display lespar;
+
+*   ---- create gdx file with LES parameter data
+
+execute_unload 'basedata\lespar.gdx' lespar ;
+
+
+
+
+
+

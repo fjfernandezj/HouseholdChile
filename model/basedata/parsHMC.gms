@@ -130,6 +130,12 @@ $offtext
    p_consumptionData(*,*)       'Consumption data'
    p_supplyData(*,*)            'Supply data'
 
+*   ---- LES function parameters
+   beta        "marginal budget share"
+   gamma       "minimum subsistence"
+   lespar      "LES parameters" 
+
+
   ;
 
 
