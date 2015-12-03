@@ -58,9 +58,20 @@ ielas(j) = 0.586;
 *   ---- Goods household data
 * --- Consumption (ton)
 jcons(h,c,j)= sum(s, p_houGdsData(h,c,j,s,'cons'));
+*jcons(h,c,'nagr-g')= 1;
 
 * --- Consummer price (millions of $CLP/ton)
 jprice(j)= p_consumptiondata(j,'prc')*(1/1000000);
+*jprice('nagr-g')= 0.9;
+
+* ---consumption value
+parameter consval 'consumption value million $CLP';
+consval(h,c,j)=jcons(h,c,j)*jprice(j);
+consval('H1',c,'nagr-g')= sum(agds, consval('H1',c,agds))*1.7;
+consval('H2',c,'nagr-g')= sum(agds, consval('H2',c,agds))*1.6;
+consval('H3',c,'nagr-g')= sum(agds, consval('H3',c,agds))*1.6;
+consval('H4',c,'nagr-g')= sum(agds, consval('H4',c,agds))*1.5;
+consval('H5',c,'nagr-g')= sum(agds, consval('H5',c,agds))*1.3;
 
 *   ---- Exogenous off-farm incomes for households (million of CLP)
 *It is necessary to determine off-farm income of household by commune
@@ -152,16 +163,12 @@ display jcons, jprice, exinc, sb, Y_0, bdgtshr, avs, Z1, avg_hougamma, avg_comga
 
 
 ****************************CALIBRATION AND CORE MODEL DATA*********************
-
-*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*                   Beta parameter (marginal budget share)
-*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   ---- crop area (ha) (only activities with gmar >0) household.comunne level-----
 ***Note !! --> If we take into account only activities with gmar > 0 subsistence farm types are ignored
 *so we eliminate the condition under wich the statement is executed (i.e.
-*x0(h,c,a,s)$(p_householdData(h,c,a,s,'gmar') gt 0)= p_householdData(h,c,a,s,'area');
+x0(h,c,a,s)$(p_householdData(h,c,a,s,'gmar') gt 0)= p_householdData(h,c,a,s,'area');
 
-x0(h,c,a,s)= p_householdData(h,c,a,s,'area');
+*x0(h,c,a,s)= p_householdData(h,c,a,s,'area');
 x0(h,c,a,'tot')= x0(h,c,a,'dry')+ x0(h,c,a,'irr');
 
 *   ---- farmland availability (ha) commune level
@@ -242,7 +249,7 @@ $offtext
 
 selas(a)= p_supplyData(a,'selast');
 
-display x0, tcland, thland, icland, w, yld, lab, labrnt, labfam, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, HrdPrice;
+display x0, tcland, thland, icland, w, yld, lab, labrnt, labfam, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, HrdPrice, consval;
 
 
 

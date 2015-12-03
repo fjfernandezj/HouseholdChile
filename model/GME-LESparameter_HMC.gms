@@ -34,8 +34,9 @@ gamma_v          gamma parameter
 
 
 Free variables
-ENTRPY        The entropy measure to be maximized
+ENTRPY           The entropy measure to be maximized
 mhu_v            error term
+
 ;
 *-------------------------------------------------------------------------------
 EQUATIONS
@@ -86,17 +87,29 @@ eq_gammaAccnst(h,c,j).. gamma_v(h,c,j) =l= jcons(h,c,j)    ;
 eq_mhuAccnst(h,c)..   sum(j, mhu_v(h,c,j)) =e= 0  ;
 
 * Accounting restriction (market goods)
-eq_nonAgr(h,c,m)..   jcons(h,c,'nagr-g')*jprice('nagr-g') =e= Y_0(h,c) - sum(agds, gamma_v(h,c,agds)*jprice(agds));
+eq_nonAgr(h,c,m)..   consval(h,c,'nagr-g') =e= Y_0(h,c) - sum(agds, gamma_v(h,c,agds)*jprice(agds));
 
 *   SOLVING THE MODEL
 *-------------------------------- Defining the model ------------------------------
-MODEL household_GME_LES OPTIMIZATION / all / ;
+MODEL household_GME_LES OPTIMIZATION
+/eq_Entropy
+ eq_expfunct
+eq_beta
+eq_gamma
+eq_mhu
+eq_probB
+eq_probG
+eq_probE
+eq_betaAccnst
+eq_gammaAccnst
+eq_mhuAccnst
+eq_nonAgr
+/ ;
 *--------------------- Initial values of variables and bounds ---------------------
-prob_B.l(h,c,j,eb) = 0.05 ;
-prob_G.l(h,c,j,eg) = 0.05;
-prob_E.l(h,c,j,ee)= 0.05;
-beta_v.lo(h,c,'nagr-g')=0.0005805;
-*gamma_v.lo(h,c,j)= p_gammah(h,c,j);
+prob_B.lo(h,c,j,eb) = 0.001 ;
+prob_G.lo(h,c,j,eg) = 0.001;
+prob_E.lo(h,c,j,ee)= 0.001;
+
 *household_GME_LES.tolinfeas = 1e-3;
 *
 *
