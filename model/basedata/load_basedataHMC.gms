@@ -65,13 +65,20 @@ jprice(j)= p_consumptiondata(j,'prc')*(1/1000000);
 * ---consumption value
 * Based on "VII Encuesta de Presupuestos Familiares"  (INE, 2013) we assume the
 * following values for budget share for non-agricultural goods
+* The first quintil 35% of their budget share is in Food
+* The second quintil 30% of their budget share is in Food
+* The third quintil 25% of their budget share is in Food
+* The fourth quintil 20% of their budget share is in Food
+* The fifth quintil 12% of their budget share is in Food
+
+
 parameter consval 'consumption value million $CLP';
 consval(h,c,j)=jcons(h,c,j)*jprice(j);
-consval('H1',c,'nagr-g')= sum(agds, consval('H1',c,agds))*7.3;
-consval('H2',c,'nagr-g')= sum(agds, consval('H2',c,agds))*4;
-consval('H3',c,'nagr-g')= sum(agds, consval('H3',c,agds))*3;
-consval('H4',c,'nagr-g')= sum(agds, consval('H4',c,agds))*2.5;
-consval('H5',c,'nagr-g')= sum(agds, consval('H5',c,agds))*2;
+consval('H1',c,'nagr-g')= [[sum(agds, consval('H1',c,agds))]/0.12]*(0.88);
+consval('H2',c,'nagr-g')= [[sum(agds, consval('H2',c,agds))]/0.20]*(0.80);
+consval('H3',c,'nagr-g')= [[sum(agds, consval('H3',c,agds))]/0.25]*(0.75);
+consval('H4',c,'nagr-g')= [[sum(agds, consval('H4',c,agds))]/0.30]*(0.70);
+consval('H5',c,'nagr-g')= [[sum(agds, consval('H5',c,agds))]/0.35]*(0.65);
 
 *   ---- Exogenous off-farm incomes for households (million of CLP)
 *It is necessary to determine off-farm income of household by commune
