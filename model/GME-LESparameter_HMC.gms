@@ -29,12 +29,13 @@ Positive variables
 prob_B           Probability for beta parameter (marginal budget share)
 prob_G           Probability for gamma parameter (uncompresibble consumption)
 prob_E           Probability for error
-beta_v           beta parameter
-gamma_v          gamma parameter
+
 
 
 Free variables
 ENTRPY           The entropy measure to be maximized
+beta_v           beta parameter
+gamma_v          gamma parameter
 mhu_v            error term
 
 ;
