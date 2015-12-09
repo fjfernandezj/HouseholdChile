@@ -29,13 +29,12 @@ Positive variables
 prob_B           Probability for beta parameter (marginal budget share)
 prob_G           Probability for gamma parameter (uncompresibble consumption)
 prob_E           Probability for error
-
+beta_v           beta parameter
+gamma_v          gamma parameter
 
 
 Free variables
 ENTRPY           The entropy measure to be maximized
-beta_v           beta parameter
-gamma_v          gamma parameter
 mhu_v            error term
 
 ;
@@ -110,7 +109,7 @@ eq_nonAgr
 prob_B.lo(h,c,j,eb) = 0.001 ;
 prob_G.lo(h,c,j,eg) = 0.001;
 prob_E.lo(h,c,j,ee)= 0.001;
-
+*gamma_v.up(h,c,j)=1.5;
 *household_GME_LES.tolinfeas = 1e-3;
 *
 *
@@ -119,11 +118,11 @@ prob_E.lo(h,c,j,ee)= 0.001;
 OPTION NLP = CONOPT3 ;
 
 household_GME_LES.scaleopt=1;
-eq_expfunct.scale(h,c,j) = 100000 ;
-beta_v.scale(h,c,j) = 100000 ;
-eq_beta.scale(h,c,j)= 100000 ;
-gamma_v.scale(h,c,j)= 100000 ;
-eq_gamma.scale(h,c,j)= 100000 ;
+eq_expfunct.scale(h,c,j) = 1000000 ;
+beta_v.scale(h,c,j) = 1000000 ;
+eq_beta.scale(h,c,j)= 1000000 ;
+gamma_v.scale(h,c,j)= 1000000 ;
+eq_gamma.scale(h,c,j)= 1000000 ;
 
 
 SOLVE household_GME_LES using NLP maximizing ENTRPY    ;
