@@ -56,38 +56,38 @@ eq_nonAgr         Accounting restriction for non-agricultural goods
 ;
 *-------------------------------------------------------------------------------
 **Objective function
-eq_Entropy..      ENTRPY =E= -SUM((h,c,j,eb), prob_B(h,c,j,eb)*log(prob_B(h,c,j,eb)))
-                      -SUM((h,c,j,eg), prob_G(h,c,j,eg)*log(prob_G(h,c,j,eg)))
-                      -SUM((h,c,j,ee), prob_E(h,c,j,ee)*log(prob_E(h,c,j,ee)));
+eq_Entropy..      ENTRPY =E= -SUM((h,j,eb), prob_B(h,j,eb)*log(prob_B(h,j,eb)))
+                      -SUM((h,j,eg), prob_G(h,j,eg)*log(prob_G(h,j,eg)))
+                      -SUM((h,j,ee), prob_E(h,j,ee)*log(prob_E(h,j,ee)));
 
 
 **Data consistency constraints
-eq_expfunct(h,c,j)..   jcons(h,c,j)*jprice(j) =e= beta_v(h,c,j)*[(Y_0(h,c)- sum(jj, gamma_v(h,c,j)*jprice(j)))]
-                                  + gamma_v(h,c,j)*jprice(j) + mhu_v(h,c,j);
+eq_expfunct(h,j)$(jcons(h,j) gt 0)..   jcons(h,j)*jprice(j) =e= beta_v(h,j)*[(Y_0(h)- sum(jj, gamma_v(h,j)*jprice(j)))]
+                                  + gamma_v(h,j)*jprice(j) + mhu_v(h,j);
 
 
-eq_beta(h,c,j)..       beta_v(h,c,j)  =e= sum(eb, prob_B(h,c,j,eb)*Z1(eb,c,j))    ;
+eq_beta(h,j)$(jcons(h,j) gt 0)..       beta_v(h,j)  =e= sum(eb, prob_B(h,j,eb)*Z1(eb,j))    ;
 
 
-eq_gamma(h,c,j)..      gamma_v(h,c,j) =e= sum(eg, prob_G(h,c,j,eg)*Z2(eg,c,j))   ;
+eq_gamma(h,j)$(jcons(h,j) gt 0)..      gamma_v(h,j) =e= sum(eg, prob_G(h,j,eg)*Z2(eg,j))   ;
 
 
-eq_mhu(h,c,j)..        mhu_v(h,c,j)   =e= sum(ee, prob_E(h,c,j,ee)*Z3(h,c,ee,j))   ;                            ;
+eq_mhu(h,j)$(jcons(h,j) gt 0)..        mhu_v(h,j)   =e= sum(ee, prob_E(h,j,ee)*Z3(h,ee,j))   ;                            ;
 
 
 ** Adding-up or Normalization constraints
-eq_probB(h,c,j).. SUM(eb, prob_B(h,c,j,eb)) =E= 1 ;
-eq_probG(h,c,j).. SUM(eg, prob_G(h,c,j,eg)) =E= 1 ;
-eq_probE(h,c,j).. SUM(ee, prob_E(h,c,j,ee)) =E= 1 ;
+eq_probB(h,j).. SUM(eb, prob_B(h,j,eb)) =E= 1 ;
+eq_probG(h,j).. SUM(eg, prob_G(h,j,eg)) =E= 1 ;
+eq_probE(h,j).. SUM(ee, prob_E(h,j,ee)) =E= 1 ;
 
 **Accounting restrictions
 
-eq_betaAccnst(h,c)..  sum(j, beta_v(h,c,j)) =e= 1 ;
-eq_gammaAccnst(h,c,j).. gamma_v(h,c,j) =l= jcons(h,c,j)    ;
-eq_mhuAccnst(h,c)..   sum(j, mhu_v(h,c,j)) =e= 0  ;
+eq_betaAccnst(h)..  sum(j, beta_v(h,j)) =e= 1 ;
+eq_gammaAccnst(h,j)$(jcons(h,j) gt 0).. gamma_v(h,j) =l= jcons(h,j)    ;
+eq_mhuAccnst(h)..   sum(j, mhu_v(h,j)) =e= 0  ;
 
 * Accounting restriction (market goods)
-eq_nonAgr(h,c,m)..   consval(h,c,'nagr-g') =e= Y_0(h,c) - sum(agds, gamma_v(h,c,agds)*jprice(agds));
+eq_nonAgr(h,m)..   consval(h,m) =e= Y_0(h) - sum(agds, gamma_v(h,agds)*jprice(agds));
 
 *   SOLVING THE MODEL
 *-------------------------------- Defining the model ------------------------------
@@ -106,32 +106,32 @@ eq_mhuAccnst
 eq_nonAgr
 / ;
 *--------------------- Initial values of variables and bounds ---------------------
-prob_B.lo(h,c,j,eb) = 0.001 ;
-prob_G.lo(h,c,j,eg) = 0.001;
-prob_E.lo(h,c,j,ee)= 0.001;
-*gamma_v.up(h,c,j)=1.5;
-*household_GME_LES.tolinfeas = 1e-3;
-*
-*
+prob_B.lo(h,j,eb) = 0.001 ;
+prob_G.lo(h,j,eg) = 0.001;
+prob_E.lo(h,j,ee)= 0.001;
+beta_v.l(h,'nagr-g')=0.5;
+
+
 *--------------------------------- Solving the model ------------------------------
 
 OPTION NLP = CONOPT3 ;
 
+$ontext
 household_GME_LES.scaleopt=1;
 eq_expfunct.scale(h,c,j) = 1000000 ;
 beta_v.scale(h,c,j) = 1000000 ;
 eq_beta.scale(h,c,j)= 1000000 ;
 gamma_v.scale(h,c,j)= 1000000 ;
 eq_gamma.scale(h,c,j)= 1000000 ;
-
+$offtext
 
 SOLVE household_GME_LES using NLP maximizing ENTRPY    ;
 *----------------------------------------------------------------------------------
 
 parameter lespar;
 
-lespar(h,c,j,'beta')= beta_v.l(h,c,j);
-lespar(h,c,j,'gamma')= gamma_v.l(h,c,j);
+lespar(h,j,'beta')= beta_v.l(h,j);
+lespar(h,j,'gamma')= gamma_v.l(h,j);
 
 display lespar;
 

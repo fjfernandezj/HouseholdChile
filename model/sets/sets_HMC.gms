@@ -164,7 +164,26 @@ a(act)     'activities to be modeled'
 tf(fct)    Tradable factors
 /lnd,lab,cap/
 
-*---Goods subsets
+*---subsets of Goods
+grnj(gds) grains
+/wht,oat/
+*/wht,oat,ric/
+scj(gds) spring crops
+/mze, pot/
+*gbn and chk no supply elasticities --> original /mze,cmb, gbn, chk, pot/
+
+svj(gds) sprig vegetables
+/pea,oni,tom,mel,wtm,cuc,sqh /
+
+ocj(gds) other crops
+/snf,tob,cbg,sgb,soy /
+
+sdpj(gds) seed production
+/mzes, cbgs, cucs, mels,wtms /
+
+nagr(gds) non agricultural goods
+/nagr-g/
+
 j(gds) 'goods to be modeled'
 ;
 
@@ -174,11 +193,13 @@ s(sys)=yes;
 j(gds)=yes;
 f(fct)=yes;
 a(act)= grn(act)+ sc(act) ;
-
+j(gds)= grnj(gds)+ scj(gds)+ svj(gds)+ nagr(gds) ;
 ;
+
 Alias
 (j,jj)
 (a,aa)
+
 ;
 
 set aj(act,gds) mapping activities-goods

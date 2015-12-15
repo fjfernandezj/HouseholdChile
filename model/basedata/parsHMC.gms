@@ -23,10 +23,13 @@ $offtext
 Parameter
 *--- BETA-LES Parameter
 ielas        income elasticity for agricultural food products
-jcons        Goods consumed (ton)
+jcons_com    Goods consumption (ton) per commune
+jcons        Goods consumed (ton) per household
 jprice       Consumer prices (millions of $CLP per ton)
+consval      Consumption value million $CLP
 exinc        Exogenous off-farm incomes for households (millions of $CLP)
 sb           Subsidies (millions of $CLP)
+Y_0_com      Initial Farm household full income per commune (millions of $CLP)
 Y_0          Initial Farm household full Income (millions of $CLP)
 bdgtshr      budget share by household-commune and good
 avs          average budget share per good per commune
@@ -133,7 +136,7 @@ $offtext
 *   ---- LES function parameters
    beta        "marginal budget share"
    gamma       "minimum subsistence"
-   lespar      "LES parameters" 
+   lespar      "LES parameters"
 
 
   ;

@@ -82,8 +82,8 @@ $gdxin
 *   ---- import data (from xls to gdx)
 $call "gdxxrw.exe ..\data\activities\FinalDB_2910.xlsx o=..\data\activities\FinalDB_2910.gdx se=2 index=indexData!A3"
 $call "gdxxrw.exe ..\data\supportpoints\supportpoints.xlsx o=..\data\supportpoints\supportpoints.gdx se=2 index=indexData!A3"
-$call "gdxxrw.exe ..\data\markets\HousModel_supElast.xlsx o=..\data\markets\HousModel_supElast.gdx se=2 index=index!A3"
-$call "gdxxrw.exe ..\data\markets\Consumer_prices.xlsx o=..\data\markets\Consumer_prices.gdx se=2 index=index!A3"
+$call "gdxxrw.exe ..\data\market\HousModel_supElast.xlsx o=..\data\market\HousModel_supElast.gdx se=2 index=index!A3"
+$call "gdxxrw.exe ..\data\market\Consumer_prices.xlsx o=..\data\market\Consumer_prices.gdx se=2 index=index!A3"
 
 
 
@@ -95,11 +95,11 @@ $gdxin ..\data\supportpoints\supportpoints.gdx
 $load    za zb
 $gdxin
 
-$gdxin ..\data\markets\HousModel_supElast.gdx
+$gdxin ..\data\market\HousModel_supElast.gdx
 $load  t_selasticities
 $gdxin
 
-$gdxin ..\data\markets\Consumer_prices.gdx
+$gdxin ..\data\market\Consumer_prices.gdx
 $load  t_cnsPrcs t_delas
 $gdxin
 

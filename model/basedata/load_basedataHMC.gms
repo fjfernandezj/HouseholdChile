@@ -56,29 +56,17 @@ ielas(j) = 0.586;
 * We calculate consumption in monetary value
 *(i.e prices of good consumed by consumed quantity of good (CLP$))
 *   ---- Goods household data
-* --- Consumption (ton)
-jcons(h,c,j)= sum(s, p_houGdsData(h,c,j,s,'cons'));
+* --- Consumption (ton) per commune
+jcons_com(h,c,j)= sum(s, p_houGdsData(h,c,j,s,'cons'));
+
+* --- Consumption (ton) per household
+jcons(h,j)$(sum(c, 1$jcons_com(h,c,j)))= sum(c, jcons_com(h,c,j))/sum(c, 1$jcons_com(h,c,j));
 
 * --- Consummer price (millions of $CLP/ton)
 jprice(j)= p_consumptiondata(j,'prc')*(1/1000000);
 
-* ---consumption value
-* Based on "VII Encuesta de Presupuestos Familiares"  (INE, 2013) we assume the
-* following values for budget share for non-agricultural goods
-* The first quintil 35% of their budget share is in Food
-* The second quintil 30% of their budget share is in Food
-* The third quintil 25% of their budget share is in Food
-* The fourth quintil 20% of their budget share is in Food
-* The fifth quintil 12% of their budget share is in Food
-
-
-parameter consval 'consumption value million $CLP';
-consval(h,c,j)=jcons(h,c,j)*jprice(j);
-consval('H1',c,'nagr-g')= [[sum(agds, consval('H1',c,agds))]/0.12]*(0.88);
-consval('H2',c,'nagr-g')= [[sum(agds, consval('H2',c,agds))]/0.20]*(0.80);
-consval('H3',c,'nagr-g')= [[sum(agds, consval('H3',c,agds))]/0.25]*(0.75);
-consval('H4',c,'nagr-g')= [[sum(agds, consval('H4',c,agds))]/0.30]*(0.70);
-consval('H5',c,'nagr-g')= [[sum(agds, consval('H5',c,agds))]/0.35]*(0.65);
+*--- consumption value million $CLP'
+consval(h,j)=jcons(h,j)*jprice(j);
 
 *   ---- Exogenous off-farm incomes for households (million of CLP)
 *It is necessary to determine off-farm income of household by commune
@@ -103,25 +91,41 @@ sb('H3') = 242772 * (1/1000000);
 sb('H4') = 242772 * (1/1000000);
 sb('H5') = 772800 * (1/1000000);
 
-*Farm household full income - Assuming that Agricultural revenue represent 55% of total income
-**Sources:
-* -INDAP -PUC (2013) ANALISIS DE LA VARIABLE INGRESO DE LAS EXPLOTACIONES DEL SEGMENTO PRODUCTOR VULNERABLE DE LA PEQUEÑA AGRICULTURA ATENDIDA POR INDAP
-* -FAO 2009
-Y_0(h,c) = [[[sum((a,s), p_householdData(h,c,a,s,'gmar'))]*(1/1000000)] + exinc(h) + sb(h)];
+*Farm household full income
+Y_0_com(h,c) = [[[sum((a,s), p_householdData(h,c,a,s,'gmar'))]*(1/1000000)] + exinc(h) + sb(h)];
+Y_0(h) = sum(c, Y_0_com(h,c))/sum(c, 1$Y_0_com(h,c));
 
-* --- budget share of agricultural activities (p(j)*c(j)/Y)
-bdgtshr(h,c,j) = [jcons(h,c,j)*jprice(j)]/Y_0(h,c);
+* ---consumption values for "market goods"
+* Based on "VII Encuesta de Presupuestos Familiares"  (INE, 2013) we assume the
+* following values for budget share for non-agricultural goods
+* The first quintil 35% of their budget share is in Food
+* The second quintil 30% of their budget share is in Food
+* The third quintil 25% of their budget share is in Food
+* The fourth quintil 20% of their budget share is in Food
+* The fifth quintil 12% of their budget share is in Food
 
+consval('H1','nagr-g')= Y_0('H1')*(0.88);
+consval('H2','nagr-g')= Y_0('H2')*(0.80);
+consval('H3','nagr-g')= Y_0('H3')*(0.75);
+consval('H4','nagr-g')= Y_0('H4')*(0.72);
+consval('H5','nagr-g')= Y_0('H5')*(0.68);
+
+
+* --- budget share of agricultural goods (p(j)*c(j)/Y)
+bdgtshr(h,j) = [jcons(h,j)*jprice(j)]/Y_0(h);
+
+* --- budget share of non-agricultural goods
+bdgtshr(h,'nagr-g') = consval(h,'nagr-g')/Y_0(h);
 
 ** --- Average budget share
-avs(c,j)$(sum(h, 1$bdgtshr(h,c,j)) gt 0)= sum(h, bdgtshr(h,c,j))/sum(h, 1$bdgtshr(h,c,j))    ;      ;
-*avs(c,'nagr-g') = 1 - sum(j, avs(c,j));
+avs(j)$(sum(h, 1$bdgtshr(h,j)) gt 0)= sum(h, bdgtshr(h,j))/sum(h, 1$bdgtshr(h,j))    ;
+avs('nagr-g')$(sum(h, 1$bdgtshr(h,'nagr-g')) gt 0)= sum(h, bdgtshr(h,'nagr-g'))/sum(h, 1$bdgtshr(h,'nagr-g')) ;
 
 *--- Values of support points for beta
-Z1(eb,c,j) = za(eb,j)*ielas(j)*avs(c,j) ;
+Z1(eb,j) = za(eb,j)*ielas(j)*avs(j) ;
 
 *--- Support points for the beta parameter of the additional goods ("market goods)
-Z1(eb,c,'nagr') = za(eb,'nagr-g');
+Z1(eb,'nagr-g') = za(eb,'nagr-g');
 
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *                   Gamma parameter (uncompressible consumption)
@@ -131,19 +135,21 @@ Z1(eb,c,'nagr') = za(eb,'nagr-g');
 * each good. The 11 support points are represented by:
 * zb(eg,j) =[0,0.5,1,1.5,2]
 
-*   ----Income elasticity from (Seale et al. 2003)
+*   ----Frisch own price elasticity from (Seale et al. 2003)  (+/- ????)
 Scalar
-lambda Frisch parameter                                  /-0.474/
+lambda Frisch parameter                                  /0.474/
 ;
 
 * --- average Gamma parameter by household -  average uncompressible consumption
-avg_hougamma(h,c,j) =  [Y_0(h,c)/jprice(j)]*[avs(c,j)+([ielas(j)*avs(c,j)]/lambda)];
+avg_hougamma(h,j)$(jprice(j) gt 0) =  [Y_0(h)/jprice(j)]*[avs(j)+([ielas(j)*avs(j)]/lambda)];
+avg_hougamma(h,'nagr-g')$(consval(h,'nagr-g') gt 0) =  [Y_0(h)/consval(h,'nagr-g')]*[avs('nagr-g')+([ielas('nagr-g')*avs('nagr-g')]/lambda)];
+
 
 * --- average Gamma parameter by commune -  average uncompressible consumption
-avg_comgamma(c,j)$(sum(h, 1$avg_hougamma(h,c,j)) gt 0) = sum(h, avg_hougamma(h,c,j))/sum(h, 1$avg_hougamma(h,c,j));
+avg_comgamma(j)$(sum(h, 1$avg_hougamma(h,j)) gt 0) = sum(h, avg_hougamma(h,j))/sum(h, 1$avg_hougamma(h,j));
 
 * --- Support points for gamma
-Z2(eg,c,j) = zb(eg,j) * avg_comgamma(c,j)   ;
+Z2(eg,j) = zb(eg,j) * avg_comgamma(j)   ;
 
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *                                 Error term (mhu)
@@ -155,15 +161,17 @@ Z2(eg,c,j) = zb(eg,j) * avg_comgamma(c,j)   ;
 Kst = card(ee);
 
 *--- average consumption of good by commune
-avgc(c,j)$(sum(h, 1$jcons(h,c,j)) gt 0)= sum(h, jcons(h,c,j))/sum(h, 1$jcons(h,c,j));
+avgc(j)$(sum(h, 1$jcons(h,j)) gt 0)= sum(h, jcons(h,j))/sum(h, 1$jcons(h,j));
 
 *---standar deviation of consumption and expenditure in good j
-std_les(c,j) = sqrt({sum(h,sqr(jcons(h,c,j)-avgc(c,j)))/Kst});
+std_les(j) = sqrt({sum(h,sqr(jcons(h,j)-avgc(j)))/Kst});
+std_les('nagr-g')= sqrt({sum(h,sqr(bdgtshr(h,'nagr-g')-avs('nagr-g')))/Kst});
+
 
 * --- Support points for the error term mhu
-Z3(h,c,'e1',j) = -3*std_les(c,j);
-Z3(h,c,'e2',j) = 0;
-Z3(h,c,'e3',j) =  3*std_les(c,j);
+Z3(h,'e1',j) = -3*std_les(j);
+Z3(h,'e2',j) = 0;
+Z3(h,'e3',j) =  3*std_les(j);
 
 
 display jcons, jprice, exinc, sb, Y_0, bdgtshr, avs, Z1, avg_hougamma, avg_comgamma, Z2, avgc, std_les, Z3;
