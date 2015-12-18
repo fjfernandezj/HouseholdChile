@@ -217,6 +217,7 @@ p_householdData(hou,com,act,sys,'tot_lab') = p_householdData(hou,com, act,sys,'h
 
 *--------------Hired labor average cost-----------------------------------------
 p_householdData(hou,com, act,sys,'HLab_Price') = t_householdData(hou,com,act,sys,'PriceHrdLab');
+p_householdData(hou,com, act,sys,'FLab_Price') = t_householdData(hou,com,act,sys,'PriceFamLab');  
 
 p_supplyData(act,'prd_prc') = sum((hou,com,sys), t_rawprices(hou,com,act,sys,'prc'))/sum((hou,com,sys), 1$t_rawprices(hou,com,act,sys,'prc'));
 p_supplyData(act,'selast') =  t_selasticities(act,'elas');
