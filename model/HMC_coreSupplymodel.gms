@@ -41,7 +41,10 @@ eq_FarmHhinc          Farm household expected income
 
 eq_AgrInc_LP          Agricultural Income with linear Costs
 eq_AgrInc_NLP         Agricultural Income with PMP Cost parameters
-eq_RscConst           Resource constraints at farm household level (land-labour-water-capital)
+*eq_RscConst           Resource constraints at farm household level (land-labour-water-capital)
+eq_tLAND              Land constraint
+eq_TotLab             Labour constraint
+
 ;
 
 *---Equation definition
@@ -56,12 +59,18 @@ eq_AgrInc_nlp(h,c)..      Z(h,c) =e= sum((a,s)$map_hcas(h,c,a,s),[yld(h,c,a,s)*x
                           - sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) ;
 
 
-eq_RscConst(h,c,f)..      sum((a,s)$map_hcas(h,c,a,s), Am(h,c,a,s,f)*x(h,c,a,s)) =l= B(h,c,f) + sldq(h,c,f) - bght(h,c,f);
+*eq_RscConst(h,c,f)..      sum((a,s)$map_hcas(h,c,a,s), Am(h,c,a,s,f)*x(h,c,a,s)) =l= B(h,c,f) + sldq(h,c,f) - bght(h,c,f);
+
+eq_tLAND(c)..             sum((h,a,s)$map_hcas(h,c,a,s), X(h,c,a,s)) =L= tcland(c);
+
+eq_TotLab(c)..            sum((h,a,s)$map_hcas(h,c,a,s), labreq(h,c,a,s)* X(h,c,a,s))=l= totLab(c);
+
 
 
 *---Model definition
 Model  household_supply model for the Maule region Chile /
 eq_Obj
 eq_FarmHhinc
-eq_RscConst
+eq_tLAND
+eq_TotLab
 /;

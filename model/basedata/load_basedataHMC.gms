@@ -183,10 +183,10 @@ display jcons, jprice, exinc, sb, Y_0, bdgtshr, avs, Z1, avg_hougamma, avg_comga
 ****************************CALIBRATION AND CORE MODEL DATA*********************
 *   ---- crop area (ha) (only activities with gmar >0) household.comunne level-----
 ***Note !! --> If we take into account only activities with gmar > 0 subsistence farm types are ignored
-*so we eliminate the condition under wich the statement is executed (i.e.
-*x0(h,c,a,s)$(p_householdData(h,c,a,s,'gmar') gt 0)= p_householdData(h,c,a,s,'area');
+*so we eliminate the condition under wich the statement is executed????? (i.e.
+x0(h,c,a,s)$(p_householdData(h,c,a,s,'gmar') gt 0)= p_householdData(h,c,a,s,'area');
 
-x0(h,c,a,s)= p_householdData(h,c,a,s,'area');
+*x0(h,c,a,s)= p_householdData(h,c,a,s,'area');
 x0(h,c,a,'tot')= x0(h,c,a,'dry')+ x0(h,c,a,'irr');
 
 *   ---- farmland availability (ha) commune level
@@ -206,12 +206,14 @@ w(h,c)= thland(h,c)/tcland(c) ;
 yld(h,c,a,s)= p_householdData(h,c,a,s,'yld');
 
 *   ---- labour
-lab(h,c,a,s)= p_householdData(h,c,a,s,'tot_lab') ;
+labreq(h,c,a,s)= p_householdData(h,c,a,s,'tot_lab') ;
 labrnt(h,c,a,s)= p_householdData(h,c,a,s,'hrd_lab');
 labfam(h,c,a,s)= p_householdData(h,c,a,s,'fam_lab');
 
+totLab(c)= sum((h,a,s), [labrnt(h,c,a,s) +  labfam(h,c,a,s)]*x0(h,c,a,s));
+
 ** --- average labour input per activity and system
-avgLab(a,s)$(sum((h,c),lab(h,c,a,s)) gt 0) = sum((h,c),lab(h,c,a,s))/sum((h,c),1$lab(h,c,a,s))   ;
+avgLab(a,s)$(sum((h,c),labreq(h,c,a,s)) gt 0) = sum((h,c),labreq(h,c,a,s))/sum((h,c),1$labreq(h,c,a,s))   ;
 
 ** --- average family labour available per household and commune
 avFamLab(h,c)$(sum((a,s),labfam(h,c,a,s)) gt 0) = sum((a,s),labfam(h,c,a,s))/sum((a,s),1$labfam(h,c,a,s));
@@ -222,11 +224,11 @@ HrdPrice(a,s)$(sum((h,c),p_householdData(h,c,a,s,'HLab_Price')) gt 0) = [sum((h,
 
 *   ---- Matrix of technical coefficients
 Am(h,c,a,s,'land')$yld(h,c,a,s) = 1;
-Am(h,c,a,s,'lab')$yld(h,c,a,s)= lab(h,c,a,s);
+Am(h,c,a,s,'lab')$yld(h,c,a,s)= labreq(h,c,a,s);
 
 *   ---- Initial resource endowment
 B(h,c,'land')= thland(h,c);
-B(h,c,'lab') = sum((a,s),lab(h,c,a,s));
+B(h,c,'lab') = sum((a,s),labreq(h,c,a,s));
 
 * ---economic output coefficient (yield of activiti a)
 yl(h,c,a,s,j)$(aj(a,j) and (1$yld(h,c,a,s)) gt 0)= yld(h,c,a,s)/1$yld(h,c,a,s);
@@ -267,7 +269,7 @@ $offtext
 
 selas(a)= p_supplyData(a,'selast');
 
-display x0, tcland, thland, icland, w, yld, lab, labrnt, labfam, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, HrdPrice, consval;
+display x0, tcland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, HrdPrice, consval;
 
 
 

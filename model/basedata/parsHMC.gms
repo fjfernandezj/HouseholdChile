@@ -121,11 +121,13 @@ $offtext
 
    x0           "crop area (2011) in ha household-commune level"
 
-   lab          "Total labour (2011) working days"
+   labreq       "Total labour requirements (working days) "
 
    pprice       "Producer prices (millions $CLP/ton) (2011)"
 
    selas        "supply elasticity"
+
+   totLab       "Total labour per commune (working days)"
 
 * model data for baseline
    p_householdData(*,*,*,*,*)   'crop management data household level'
