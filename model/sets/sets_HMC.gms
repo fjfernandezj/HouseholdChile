@@ -142,15 +142,16 @@ set
 
 *---subsets of agricultural products
 grn(act) grains
-/wht,oat,ric/
-
+/wht,oat/
+*/wht,oat,ric/
 
 sc(act) spring crops
-/mze,cmb, pot/
+/mze,cmb,pot/
 *gbn and chk no supply elasticities --> original /mze,cmb, gbn, chk, pot/
 
 sv(act) sprig vegetables
-/pea,oni,tom,mel,wtm,cuc,sqh /
+/oni,tom,mel,wtm /
+* /pea,oni,tom,mel,wtm,cuc,sqh /
 
 oc(act) other crops
 /snf,tob,cbg,sgb,soy /
@@ -168,12 +169,14 @@ tf(fct)    Tradable factors
 grnj(gds) grains
 /wht,oat/
 */wht,oat,ric/
+
 scj(gds) spring crops
-/mze, pot/
+/mze,cmb,pot/
 *gbn and chk no supply elasticities --> original /mze,cmb, gbn, chk, pot/
 
 svj(gds) sprig vegetables
-/pea,oni,tom,mel,wtm,cuc,sqh /
+/oni,tom,mel,wtm/
+*/pea,oni,tom,mel,wtm,cuc,sqh /
 
 ocj(gds) other crops
 /snf,tob,cbg,sgb,soy /
@@ -192,8 +195,8 @@ c(com)=yes;
 s(sys)=yes;
 j(gds)=yes;
 f(fct)=yes;
-a(act)= grn(act)+ sc(act) ;
-j(gds)= grnj(gds)+ scj(gds)+ svj(gds)+ nagr(gds) ;
+a(act)= grn(act)+ sc(act)+sv(act)   ;
+j(gds)= grnj(gds)+ scj(gds)+ svj(gds) + nagr(gds) ;
 ;
 
 Alias
