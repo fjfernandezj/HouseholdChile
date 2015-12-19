@@ -252,22 +252,31 @@ presence of transaction costs, farm household's prices are different to market p
 production and consumption decisions are non-separable and the household may choose to live
 in partial or total autarky"
 $offtext
-tb(h,c,jf)=1;
-ts(h,c,jf)=1;
+tb(h,c,j)=1;
+ts(h,c,j)=1;
 
 $ontext
-tb(h,'PEN',jf) = 1;
-tb(h,'SC',jf) = 1;
-tb(h,'CAU',jf) = 1.2;
-tb(h,'PAR',jf) = 1.1;
+tb(h,'PEN',j) = 1;
+tb(h,'SC',j) = 1;
+tb(h,'CAU',j) = 1.2;
+tb(h,'PAR',j) = 1.1;
 
-ts(h,'PEN',jf) = 1;
-ts(h,'SC',jf) = 1;
-ts(h,'CAU',jf) = 1.4;
-ts(h,'PAR',jf) = 1.3;
+ts(h,'PEN',j) = 1;
+ts(h,'SC',j) = 1;
+ts(h,'CAU',j) = 1.4;
+ts(h,'PAR',j) = 1.3;
 $offtext
 
 selas(a)= p_supplyData(a,'selast');
+
+* Elasticities not supported by literature!!! (Just for testing)
+** Elastic activities
+selas('mel')= 1.1;
+selas('wtm')= 1.25;
+
+**Inelastic activities
+selas('tom')= 0.9;
+selas('oni')= 0.85;
 
 display x0, tcland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, HrdPrice, consval;
 
