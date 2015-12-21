@@ -53,6 +53,8 @@ X.up(h,c,a,s)$map_hcas(h,c,a,s) = tcland(c);
 *prdq.up(h,c,j) = sum((a,s),yl(h,c,a,s,j)*x0(h,c,a,s));
 *cs.up(h,c,j)= jcons_com(h,c,j);
 cnsq.up(h,c,j)= sum((a,s),yl(h,c,a,s,j)*x0(h,c,a,s));
+*HLAB.up(h,c) = sum((a,s), labrnt(h,c,a,s)) ;
+
 
 model basemodel modelo lineal base /
    household_noRisk

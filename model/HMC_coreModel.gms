@@ -46,7 +46,7 @@ cs
 prcg
 IM
 EX
-
+HLAB            Hired Labour (working days)
 ;
 
 *---Equation declaration
@@ -89,7 +89,7 @@ eq_FarmHhinc(h,c)..       R(h,c) =e= Z(h,c) -sum(j, bght(h,c,j)*prcg(h,c,j))+ ex
 
 
 eq_AgrInc_LP(h,c)..       Z(h,c) =e= sum(j, [sldq(h,c,j)+ cs(h,c,j)]*prcg(h,c,j)) + sb(h)
-                          - sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s));
+                          - sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s))- LabWage*HLAB(h,c);
 
 ********************************************Original FSSIM Agricultural Income eq**********************************************************
 *eq_AgrInc_nlp(h,c)..      Z(h,c) =e= sum(j, [sldq(h,c,j)+ cs(h,c,j)]*prcg(h,c,j)) + sb(h)
@@ -101,7 +101,7 @@ eq_AgrInc_LP(h,c)..       Z(h,c) =e= sum(j, [sldq(h,c,j)+ cs(h,c,j)]*prcg(h,c,j)
 *                          - sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) ;
 
 eq_AgrInc_nlp(h,c)..      Z(h,c) =e= sum(j, [sldq(h,c,j)+ cs(h,c,j)]*prcg(h,c,j)) + sb(h)
-                          - sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) ;
+                          - sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s))- LabWage*HLAB(h,c) ;
 
 
 *eq_RscConst(h,c,f)..      sum((a,s)$map_hcas(h,c,a,s), Am(h,c,a,s,f)*x(h,c,a,s)) =l= B(h,c,f) + sldq(h,c,f) - bght(h,c,f);
@@ -109,7 +109,7 @@ eq_AgrInc_nlp(h,c)..      Z(h,c) =e= sum(j, [sldq(h,c,j)+ cs(h,c,j)]*prcg(h,c,j)
 
 eq_tLAND(c)..             sum((h,a,s)$map_hcas(h,c,a,s), X(h,c,a,s)) =L= tcland(c);
 
-eq_TotLab(c)..            sum((h,a,s)$map_hcas(h,c,a,s), labreq(h,c,a,s)* X(h,c,a,s))=l= totLab(c);
+eq_TotLab(c)..            sum((h,a,s)$map_hcas(h,c,a,s), labreq(h,c,a,s)* X(h,c,a,s))=l= sum(h, avFamLab(h) + HLAB(h,c));
 
 
 eq_Qttyblnce(h,c,j)..     prdq(h,c,j)+ bght(h,c,j) =e= sldq(h,c,j) + cnsq(h,c,j);
@@ -131,7 +131,7 @@ eq_slknss2(h,c,j)..       bght(h,c,j)*(prcg(h,c,j)-[jprice(j)*tb(h,c,j)]) =e= 0;
 eq_buyorsell(h,c,j)..     sldq(h,c,j)*bght(h,c,j) =e= 0;
 
 eq_cshcnstrnt_LP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j)) + sb(h)+ exinc(h)
-                         =g= sum(j, bght(h,c,j)*prcg(h,c,j)) + sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s)) ;
+                         =g= sum(j, bght(h,c,j)*prcg(h,c,j)) + sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s)) + LabWage*HLAB(h,c) ;
 
 
 ********************************************Original FSSIM Cash Const eq**********************************************************
@@ -141,7 +141,7 @@ eq_cshcnstrnt_LP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j)) + sb(h)+ exinc(h)
 ********************************************************************************************************************************
 
 eq_cshcnstrnt_NLP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j))+ sb(h) + exinc(h)
-                         =g= sum(j, bght(h,c,j)*prcg(h,c,j)) + sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) ;
+                         =g= sum(j, bght(h,c,j)*prcg(h,c,j)) + sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) + LabWage*HLAB(h,c) ;
 
 
 

@@ -32,6 +32,7 @@ R               Farm household expected income
 Z               Agricultural expected income
 sldq            Sold quantities of goods - rented-out tradable factors
 bght            Bought quantities of goods- rented-in tradable factors
+HLAB            Hired Labour (days)
 *;
 
 *---Equation declaration
@@ -53,17 +54,17 @@ eq_Obj..                  U =e=sum((h,c), w(h,c)*R(h,c));
 eq_FarmHhinc(h,c)..       R(h,c) =e= Z(h,c) + exinc(h);
 
 eq_AgrInc_LP(h,c)..       Z(h,c) =e= sum((a,s)$map_hcas(h,c,a,s),[yld(h,c,a,s)*x(h,c,a,s)]*pprice(a))+ sb(h)
-                          - sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s));
+                          - sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s)) - LabWage*HLAB(h,c);
 
 eq_AgrInc_nlp(h,c)..      Z(h,c) =e= sum((a,s)$map_hcas(h,c,a,s),[yld(h,c,a,s)*x(h,c,a,s)]*pprice(a)) + sb(h)
-                          - sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) ;
+                          - sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) - LabWage*HLAB(h,c) ;
 
 
 *eq_RscConst(h,c,f)..      sum((a,s)$map_hcas(h,c,a,s), Am(h,c,a,s,f)*x(h,c,a,s)) =l= B(h,c,f) + sldq(h,c,f) - bght(h,c,f);
 
 eq_tLAND(c)..             sum((h,a,s)$map_hcas(h,c,a,s), X(h,c,a,s)) =L= tcland(c);
 
-eq_TotLab(c)..            sum((h,a,s)$map_hcas(h,c,a,s), labreq(h,c,a,s)* X(h,c,a,s))=l= totLab(c);
+eq_TotLab(c)..            sum((h,a,s)$map_hcas(h,c,a,s), labreq(h,c,a,s)* X(h,c,a,s))=l= sum(h, avFamLab(h) + HLAB(h,c));
 
 
 
