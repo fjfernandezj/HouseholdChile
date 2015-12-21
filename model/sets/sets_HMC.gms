@@ -121,7 +121,7 @@ set
 set
 var       'variables'             /Area,yld,prd,cons,prc,hrd_lab,fam_lab,TtlLab_Cst,
                                   inpCst,RntCst,TtlCst,srev,gmar,consPrice,gdsCons,
-                                  tot_lab,vcost,selast,prd_prc,HLab_Price/
+                                  tot_lab,vcost,selast,prd_prc,HLab_Price,FLab_Price/
 
 ;
 
