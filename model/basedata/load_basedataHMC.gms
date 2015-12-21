@@ -216,10 +216,10 @@ totLab(c)= sum((h,a,s), [labrnt(h,c,a,s) +  labfam(h,c,a,s)]*x0(h,c,a,s));
 avgLab(a,s)$(sum((h,c),labreq(h,c,a,s)) gt 0) = sum((h,c),labreq(h,c,a,s))/sum((h,c),1$labreq(h,c,a,s))   ;
 
 ** --- average family labour available per household and commune
-avFamLab(h,c)$(sum((a,s),labfam(h,c,a,s)) gt 0) = sum((a,s),labfam(h,c,a,s))/sum((a,s),1$labfam(h,c,a,s));
+avFamLab(h)$(sum((c,a,s),labfam(h,c,a,s)) gt 0) = sum((c,a,s),labfam(h,c,a,s))/sum((c,a,s),1$labfam(h,c,a,s));
 
 ** ---- Average price Hired labour by activity and system
-HrdPrice(a,s)$(sum((h,c),p_householdData(h,c,a,s,'HLab_Price')) gt 0) = [sum((h,c),p_householdData(h,c,a,s,'HLab_Price'))/sum((h,c),1$p_householdData(h,c,a,s,'HLab_Price'))] * (1/1000000) ;
+LabWage$(sum((h,c,a,s),p_householdData(h,c,a,s,'HLab_Price')) gt 0) = [sum((h,c,a,s),p_householdData(h,c,a,s,'HLab_Price'))/sum((h,c,a,s),1$p_householdData(h,c,a,s,'HLab_Price'))] * (1/1000000) ;
 
 
 *   ---- Matrix of technical coefficients
@@ -233,8 +233,8 @@ B(h,c,'lab') = sum((a,s),labreq(h,c,a,s));
 * ---economic output coefficient (yield of activiti a)
 yl(h,c,a,s,j)$(aj(a,j) and (1$yld(h,c,a,s)) gt 0)= yld(h,c,a,s)/1$yld(h,c,a,s);
 
-*   ---- Accounting costs (variable costs millions $CLP)
-acst(h,c,a,s) = p_householdData(h,c,a,s,'vcost') * (1/1000000);
+*   ---- Accounting costs (variable costs millions $CLP) without Labour Cost
+acst(h,c,a,s) = [p_householdData(h,c,a,s,'vcost') * (1/1000000)] - {[[p_householdData(h,c,a,s,'hrd_lab')*p_householdData(h,c,a,s,'HLab_Price')] - [p_householdData(h,c,a,s,'fam_lab')*p_householdData(h,c,a,s,'FLab_Price')]]*(1/1000000)}  ;
 
 *   ---- Producer prices (millions $CLP/ton)
 pprice(a) = p_supplyData(a,'prd_prc') * (1/1000000);
@@ -278,7 +278,7 @@ selas('wtm')= 1.25;
 selas('tom')= 0.9;
 selas('oni')= 0.85;
 
-display x0, tcland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, HrdPrice, consval;
+display x0, tcland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, LabWage, consval;
 
 
 
