@@ -23,6 +23,7 @@ $onmulti ;
 Variables
 U               Weigthed sum of representative farm households' expected income
 R               Farm household expected income
+*INCF            Farm household full income
 Z               Agricultural expected income
 x               Agricultural activity levels (ha)
 prdq            Produced quantities of goods
@@ -45,16 +46,14 @@ cs
 prcg
 IM
 EX
-HLAB            Hired Labour              (men - working days)
-FLAB            Familiy Labour use        (men - working days)
-FOUT            Hiring out                (men - working days)
-LABEARN         Labor income              (million $CLP)
+HLAB            Hired Labour (working days)
 ;
 
 *---Equation declaration
 Equation
 eq_Obj                Objective function
 eq_FarmHhinc          Farm household expected income
+*eq_FarmHhfullinc      Farm household full income
 eq_AgrInc_LP          Agricultural Income with linear Costs
 eq_AgrInc_NLP         Agricultural Income with PMP Cost parameters
 eq_tLAND              Land constraint
@@ -69,10 +68,10 @@ eq_slknss2            Complementary slackness condition 2
 eq_buyorsell          Households buy or sell goods not both
 eq_cshcnstrnt_LP      Cash constraint Linear
 eq_cshcnstrnt_NLP     Cash constraint PMP lambda parameter
+*eq_expfunct           Farm household expenditure function
 eq_qttbalgood         Quantity balance of goods at aggregated level (commune)
 eq_qttbaltrf          Quantity balance of tradable factors at aggregated level (commune)
-eq_FamLab             Family labor balance    (days)
-eq_LabIncAcc          Labor income accounting  (million CLP$)
+
 
 ;
 
@@ -81,7 +80,7 @@ eq_Obj..                  U =e=sum((h,c), w(h,c)*R(h,c));
 
 *eq_FarmHhinc(h,c)..       R(h,c) =e= Z(h,c) + exinc(h);
 
-eq_FarmHhinc(h,c)..       R(h,c) =e= Z(h,c) + LABEARN(h) - sum(j, bght(h,c,j)*prcg(h,c,j))+ exinc(h) ;
+eq_FarmHhinc(h,c)..       R(h,c) =e= Z(h,c) -sum(j, bght(h,c,j)*prcg(h,c,j))+ exinc(h) ;
 
 *eq_FarmHhfullinc(h,c)..   INCF(h,c) =e= R(h,c) + sum(tf, B(h,c,'land')*bght(h,c,'land'));
 
@@ -112,9 +111,6 @@ eq_tLAND(c)..             sum((h,a,s)$map_hcas(h,c,a,s), X(h,c,a,s)) =L= tcland(
 
 eq_TotLab(c)..            sum((h,a,s)$map_hcas(h,c,a,s), labreq(h,c,a,s)* X(h,c,a,s))=l= sum(h, avFamLab(h) + HLAB(h,c));
 
-eq_FamLab(h)..            avFamLab(h) =e=  FLAB(h) + FOUT(h);
-
-eq_LabIncAcc(h)..         LABEARN(h) =e=  FOUT(h)* owage;
 
 eq_Qttyblnce(h,c,j)..     prdq(h,c,j)+ bght(h,c,j) =e= sldq(h,c,j) + cnsq(h,c,j);
 
@@ -134,7 +130,7 @@ eq_slknss2(h,c,j)..       bght(h,c,j)*(prcg(h,c,j)-[jprice(j)*tb(h,c,j)]) =e= 0;
 
 eq_buyorsell(h,c,j)..     sldq(h,c,j)*bght(h,c,j) =e= 0;
 
-eq_cshcnstrnt_LP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j)) + sb(h)+ exinc(h) + LABEARN(h)
+eq_cshcnstrnt_LP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j)) + sb(h)+ exinc(h)
                          =g= sum(j, bght(h,c,j)*prcg(h,c,j)) + sum((a,s)$map_hcas(h,c,a,s), acst(h,c,a,s)*x(h,c,a,s)) + LabWage*HLAB(h,c) ;
 
 
@@ -144,7 +140,7 @@ eq_cshcnstrnt_LP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j)) + sb(h)+ exinc(h) +
 *                          + sum((a,s), acst(h,c,a,s)*x(h,c,a,s)) ;
 ********************************************************************************************************************************
 
-eq_cshcnstrnt_NLP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j))+ sb(h) + exinc(h) + LABEARN(h)
+eq_cshcnstrnt_NLP(h,c)..      sum(j, sldq(h,c,j)*prcg(h,c,j))+ sb(h) + exinc(h)
                          =g= sum(j, bght(h,c,j)*prcg(h,c,j)) + sum((a,s)$map_hcas(h,c,a,s), ALPHACST(h,c,a,s)*x(h,c,a,s)**BETACST(h,c,a,s)) + LabWage*HLAB(h,c) ;
 
 
@@ -164,8 +160,6 @@ eq_FarmHhinc
 *eq_FarmHhfullinc
 eq_tLAND
 eq_TotLab
-eq_FamLab
-eq_LabIncAcc
 eq_Qttyblnce
 eq_prdGds
 eq_prdGds2
