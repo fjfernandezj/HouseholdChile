@@ -103,7 +103,7 @@ eq_AgrInc_nlp(h)..        Z(h) =e= sum(j, [sldq(h,j)+ cs(h,j)]*prcg(h,j)) + sb(h
 
 eq_tLAND..                sum((h,a,s)$map_has(h,a,s), X(h,a,s)) =L= tland;
 
-eq_TotLab..               sum((h,a,s)$map_has(h,a,s), labreq(h,a,s)* X(h,a,s))=l= sum(h, avFamLab(h) + HLAB(h));
+eq_TotLab(h)..             sum((a,s)$map_has(h,a,s), labreq(h,a,s)* X(h,a,s))=l=  avFamLab(h) + HLAB(h);
 
 eq_FamLab(h)..            FLAB(h) + FOUT(h) =e= avFamLab(h) ;
 
