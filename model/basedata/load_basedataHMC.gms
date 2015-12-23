@@ -181,60 +181,69 @@ display jcons, jprice, exinc, sb, Y_0, bdgtshr, avs, Z1, avg_hougamma, avg_comga
 ********************************************************************************
 
 ****************************CALIBRATION AND CORE MODEL DATA*********************
+*   ---- Gross Margin observed per household per activity per system
+grmrg0(h,a,s)$(sum(c, p_householdData(h,c,a,s,'gmar')) gt 0) = sum(c, p_householdData(h,c,a,s,'gmar'))/sum(c, 1$p_householdData(h,c,a,s,'gmar'));
+
 *   ---- crop area (ha) (only activities with gmar >0) household.comunne level-----
 ***Note !! --> If we take into account only activities with gmar > 0 subsistence farm types are ignored
 *so we eliminate the condition under wich the statement is executed????? (i.e.
-x0(h,c,a,s)$(p_householdData(h,c,a,s,'gmar') gt 0)= p_householdData(h,c,a,s,'area');
+x0(h,a,s)$(grmrg0(h,a,s) gt 0)= sum(c, p_householdData(h,c,a,s,'area'));
 
-*x0(h,c,a,s)= p_householdData(h,c,a,s,'area');
-x0(h,c,a,'tot')= x0(h,c,a,'dry')+ x0(h,c,a,'irr');
+*x0(h,a,s)= p_householdData(h,c,a,s,'area');
+x0(h,a,'tot')= x0(h,a,'dry')+ x0(h,a,'irr');
 
-*   ---- farmland availability (ha) commune level
-tcland(c)   = sum((h,a),X0(h,c,a,'tot'));
+*   ---- farmland availability (ha) regional level
+tland       =  sum((h,a),X0(h,a,'tot'));
 
-* --- Total land of household per commune
-thland(h,c) = sum(a,X0(h,c,a,'tot'));
+* --- Total land of household within the region
+thland(h)   = sum(a,X0(h,a,'tot'));
 
-* --- Irrigated land per commune
-icland(c)   = sum((h,a),X0(h,c,a,'irr'));
+* --- Irrigated land regional level
+icland      = sum((h,a),X0(h,a,'irr'));
 
 *   ---- household weight within the commune
-w(h,c)= thland(h,c)/tcland(c) ;
+w(h)= thland(h)/tland ;
 
 *   ---- crop data household
 * --- yield (ton/ha)
-yld(h,c,a,s)= p_householdData(h,c,a,s,'yld');
+yld(h,a,s)$(sum(c, p_householdData(h,c,a,s,'yld')) gt 0)= sum(c, p_householdData(h,c,a,s,'yld'))/sum(c, 1$p_householdData(h,c,a,s,'yld'));
 
 *   ---- labour
-labreq(h,c,a,s)= p_householdData(h,c,a,s,'tot_lab') ;
-labrnt(h,c,a,s)= p_householdData(h,c,a,s,'hrd_lab');
-labfam(h,c,a,s)= p_householdData(h,c,a,s,'fam_lab');
+labreq(h,a,s)$(sum(c, p_householdData(h,c,a,s,'tot_lab'))gt 0)= sum(c, p_householdData(h,c,a,s,'tot_lab'))/sum(c, 1$p_householdData(h,c,a,s,'tot_lab')) ;
+labrnt(h,a,s)$(sum(c, p_householdData(h,c,a,s,'hrd_lab'))gt 0)= sum(c, p_householdData(h,c,a,s,'hrd_lab'))/sum(c, 1$p_householdData(h,c,a,s,'hrd_lab'));
+labfam(h,a,s)$(sum(c, p_householdData(h,c,a,s,'fam_lab'))gt 0)= sum(c, p_householdData(h,c,a,s,'fam_lab'))/sum(c, 1$p_householdData(h,c,a,s,'fam_lab'));
 
-totLab(c)= sum((h,a,s), [labrnt(h,c,a,s) +  labfam(h,c,a,s)]*x0(h,c,a,s));
+totLab = sum((h,a,s), [labrnt(h,a,s) +  labfam(h,a,s)]*x0(h,a,s));
 
 ** --- average labour input per activity and system
-avgLab(a,s)$(sum((h,c),labreq(h,c,a,s)) gt 0) = sum((h,c),labreq(h,c,a,s))/sum((h,c),1$labreq(h,c,a,s))   ;
+avgLab(a,s)$(sum(h,labreq(h,a,s)) gt 0) = sum(h,labreq(h,a,s))/sum(h,1$labreq(h,a,s))   ;
 
 ** --- average family labour available per household and commune
-avFamLab(h)$(sum((c,a,s),labfam(h,c,a,s)) gt 0) = sum((c,a,s),labfam(h,c,a,s))/sum((c,a,s),1$labfam(h,c,a,s));
+avFamLab(h)$(sum((a,s),labfam(h,a,s)) gt 0) = sum((a,s),labfam(h,a,s))/sum((a,s),1$labfam(h,a,s));
 
 ** ---- Average price Hired labour by activity and system
 LabWage$(sum((h,c,a,s),p_householdData(h,c,a,s,'HLab_Price')) gt 0) = [sum((h,c,a,s),p_householdData(h,c,a,s,'HLab_Price'))/sum((h,c,a,s),1$p_householdData(h,c,a,s,'HLab_Price'))] * (1/1000000) ;
 
+** ---- hire-out  wage rate (millions $CLP per day)
+owage$(sum((h,c,a,s),p_householdData(h,c,a,s,'FLab_Price')) gt 0) = [sum((h,c,a,s),p_householdData(h,c,a,s,'FLab_Price'))/sum((h,c,a,s),1$p_householdData(h,c,a,s,'FLab_Price'))] * (1/1000000) ;
 
 *   ---- Matrix of technical coefficients
-Am(h,c,a,s,'land')$yld(h,c,a,s) = 1;
-Am(h,c,a,s,'lab')$yld(h,c,a,s)= labreq(h,c,a,s);
+Am(h,a,s,'land')$yld(h,a,s) = 1;
+Am(h,a,s,'lab')$yld(h,a,s)= labreq(h,a,s);
 
 *   ---- Initial resource endowment
-B(h,c,'land')= thland(h,c);
-B(h,c,'lab') = sum((a,s),labreq(h,c,a,s));
+B(h,'land')= thland(h);
+B(h,'lab') = sum((a,s),labreq(h,a,s));
 
 * ---economic output coefficient (yield of activiti a)
-yl(h,c,a,s,j)$(aj(a,j) and (1$yld(h,c,a,s)) gt 0)= yld(h,c,a,s)/1$yld(h,c,a,s);
+yl(h,a,s,j)$(aj(a,j) and (1$yld(h,a,s)) gt 0)= yld(h,a,s)/1$yld(h,a,s);
 
-*   ---- Accounting costs (variable costs millions $CLP) without Labour Cost
-acst(h,c,a,s) = [p_householdData(h,c,a,s,'vcost') * (1/1000000)] - {[[p_householdData(h,c,a,s,'hrd_lab')*p_householdData(h,c,a,s,'HLab_Price')] - [p_householdData(h,c,a,s,'fam_lab')*p_householdData(h,c,a,s,'FLab_Price')]]*(1/1000000)}  ;
+*   ---- Accounting costs (variable costs millions $CLP) without Labour Cost per commune
+acst_com(h,c,a,s) = [p_householdData(h,c,a,s,'vcost') * (1/1000000)] - {[[p_householdData(h,c,a,s,'hrd_lab')*p_householdData(h,c,a,s,'HLab_Price')] - [p_householdData(h,c,a,s,'fam_lab')*p_householdData(h,c,a,s,'FLab_Price')]]*(1/1000000)}  ;
+
+** --- Accounting cost per household Accounting costs per household
+acst(h,a,s)$(sum(c,acst_com(h,c,a,s)) gt 0) = sum(c,acst_com(h,c,a,s))/sum(c,1$acst_com(h,c,a,s));
+
 
 *   ---- Producer prices (millions $CLP/ton)
 pprice(a) = p_supplyData(a,'prd_prc') * (1/1000000);
@@ -252,8 +261,8 @@ presence of transaction costs, farm household's prices are different to market p
 production and consumption decisions are non-separable and the household may choose to live
 in partial or total autarky"
 $offtext
-tb(h,c,j)=1;
-ts(h,c,j)=1;
+tb(h,j)=1;
+ts(h,j)=1;
 
 $ontext
 tb(h,'PEN',j) = 1;
@@ -278,7 +287,7 @@ selas('wtm')= 1.25;
 selas('tom')= 0.9;
 selas('oni')= 0.85;
 
-display x0, tcland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, LabWage, consval;
+display x0, tland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B, yl, acst, tb, ts, selas, pprice, avgLab, avFamLab, LabWage, consval;
 
 
 

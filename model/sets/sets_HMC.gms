@@ -232,5 +232,9 @@ set aj(act,gds) mapping activities-goods
 *   ---- current activities
 set
   map_hcas   'mapping household-communes-activities-systems'
+  map_has    'mapping household-activities-systems'
+  map_hcj    'mapping household-communes-goods'
+  map_hj     'mapping household-goods'
+
 ;
 display c,h,a,aa,s,jf,j,jj,f,tf,m,aj ;

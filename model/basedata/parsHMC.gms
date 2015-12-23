@@ -50,23 +50,27 @@ Z3           Values of support points for mhu
 
 
 **--- Core Model Data
-tcland       Total land per commune
-thland       Total land of household f per commune
-icland       irrigable land (ha) commune
-w            Farm household weight within the commune
+tland        Total land availability                                   (ha)
+thland       Total land of household f per commune                     (ha)
+icland       irrigable land (ha) commune                               (ha)
+w            Farm household weight within the commune                  (%)
 BETACST      Implicit cost function's Beta parameter
 ALPHACST     Implicit cost function's Alpha parameter
-labrnt       Hired labour (working days)
-labfam       Family labour (working days)
+labrnt       Hired labour                                           (working days)
+labfam       Family labour                                          (working days)
 Am           Input coefficients (input use of factor f in activity a)
 B            Initial resource endowment
 yl           economic output coefficient (yield of activiti a)
 tb           Multiplicative transaction costs of goods (buyer)
 ts           Multiplicative transaction costs of goods (seller)
-acst         Accounting costs
+acst_com     Accounting costs per household per commune
+acst         Accounting costs per household
+grmrg0       Gross margin observed per household per activity
 avgLab       Average labour per activity and system
 avFamLab     average family labour available per household and commune
-HrdPrice     Hired labour average price (million $CLP)
+LabWage      Hired labour wage (million $CLP per day)
+owage        Hire-out  wage rate (millions $CLP per day) 
+
 
 $ontext
 
