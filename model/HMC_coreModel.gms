@@ -51,6 +51,8 @@ FOUT            Hiring out                (men - working days)
 LABEARN         Labor income              (million $CLP)
 IM_Lab          Imported quantities of labour
 EX_Lab          Exported quantities of labour
+IL              Irrigated land
+FW              Net water quantity at the farm gate (th m3)
 ;
 
 *---Equation declaration
@@ -76,8 +78,9 @@ eq_cshcnstrnt_NLP     Cash constraint PMP lambda parameter
 eq_expfunct           Farm household expenditure function
 eq_qttbalgood         Quantity balance of goods at aggregated level (commune)
 eq_qttbaltrf          Quantity balance of tradable factors at aggregated level (commune)
-
-
+eq_iLAND              Irrigable land constraint
+eq_waterUse           Water accounting equation
+eq_water              Water accounting
 
 ;
 
@@ -103,11 +106,17 @@ eq_AgrInc_nlp(h)..        Z(h) =e= sum(j, [sldq(h,j)+ cs(h,j)]*prcg(h,j)) + sb(h
 
 eq_tLAND..                sum((h,a,s)$map_has(h,a,s), X(h,a,s)) =L= tland;
 
-eq_TotLab(h)..             sum((a,s)$map_has(h,a,s), labreq(h,a,s)* X(h,a,s))=l=  avFamLab(h) + HLAB(h);
+eq_iLAND..                 sum((h,a)$map_has(h,a,'irr'), X(h,a,'irr')) =L= IL;
+
+eq_TotLab(h)..             sum((a,s)$map_has(h,a,s), labr(a,s)* X(h,a,s))=l=  FLAB(h) + HLAB(h);
 
 eq_FamLab(h)..            FLAB(h) + FOUT(h) =e= avFamLab(h) ;
 
 eq_LabIncAcc(h)..         LABEARN(h) =e=  FOUT(h)* owage;
+
+eq_waterUse(h)..          sum(a$map_has(h,a,'irr'), fir(h,a,'irr')*X(h,a,'irr')) =L= FW(h);
+
+eq_water(h)..             FW(h) =E=  DW(h)*hd;
 
 eq_Qttyblnce(h,j)..       prdq(h,j)+ bght(h,j) =e= sldq(h,j) + cnsq(h,j);
 
@@ -137,10 +146,10 @@ eq_cshcnstrnt_NLP(h)..      sum(j, sldq(h,j)*prcg(h,j))+ sb(h) + exinc(h) + LABE
 eq_expfunct(h,j)$map_hj(h,j)..      cnsq(h,j)*prcg(h,j) =e= beta(h,j)*[R(h)- sum(jj, gamma(h,jj)*prcg(h,jj))]+ gamma(h,j)*prcg(h,j);
 
 
-eq_qttbalgood(j)..          sum(h, w(h)*sldq(h,j)+IM(j)) =e= sum(h, w(h)*b(h,j)+EX(j));
+eq_qttbalgood(j)..          sum(h, w(h)*sldq(h,j)) +IM(j) =e= sum(h, w(h)*b(h,j)) +EX(j);
 
 
-eq_qttbaltrf..        sum((h), w(h)*FOUT(h)+IM_Lab(h)) =e= sum((h), w(h)*HLAB(h)+EX_Lab(h));
+eq_qttbaltrf..        sum(h, w(h)*FOUT(h)) + IM_Lab =e= sum(h, w(h)*HLAB(h)) + EX_Lab;
 
 *---Model definition
 Model  household_noRisk model for the Maule region Chile /
@@ -161,7 +170,9 @@ eq_buyorsell
 eq_expfunct
 eq_qttbalgood
 eq_qttbaltrf
-
+eq_iLAND
+eq_waterUse
+eq_water
 /;
 
 ********************************Solve statement*****************************

@@ -66,6 +66,7 @@ parameter
    t_selasticities     'supply elasticities'
    t_cnsPrcs           'Consumer prices of agricultural goods'
    t_delas             'demand elasticities'
+   t_cir               'Crop Irrigation Requirements mm/h (by AGrimied)'
    za(eb,gds)          'pre-support points for beta parameter of LES'
    zb(eg,gds)          'pre-support points for gamma parameter of LES'
 
@@ -84,7 +85,7 @@ $call "gdxxrw.exe ..\data\activities\FinalDB_2910.xlsx o=..\data\activities\Fina
 $call "gdxxrw.exe ..\data\supportpoints\supportpoints.xlsx o=..\data\supportpoints\supportpoints.gdx se=2 index=indexData!A3"
 $call "gdxxrw.exe ..\data\market\HousModel_supElast.xlsx o=..\data\market\HousModel_supElast.gdx se=2 index=index!A3"
 $call "gdxxrw.exe ..\data\market\Consumer_prices.xlsx o=..\data\market\Consumer_prices.gdx se=2 index=index!A3"
-
+$call "gdxxrw.exe ..\data\irrigation\CIR.xlsx o=..\data\irrigation\CIR.gdx se=2 index=indexDat!A3"
 
 
 $gdxin ..\data\activities\FinalDB_2910.gdx
@@ -101,6 +102,10 @@ $gdxin
 
 $gdxin ..\data\market\Consumer_prices.gdx
 $load  t_cnsPrcs t_delas
+$gdxin
+
+$gdxin ..\data\irrigation\CIR.gdx
+$load  t_cir
 $gdxin
 
 *-------------------------------------------------------------------------------
@@ -217,10 +222,23 @@ p_householdData(hou,com,act,sys,'tot_lab') = p_householdData(hou,com, act,sys,'h
 
 *--------------Hired labor average cost-----------------------------------------
 p_householdData(hou,com, act,sys,'HLab_Price') = t_householdData(hou,com,act,sys,'PriceHrdLab');
-p_householdData(hou,com, act,sys,'FLab_Price') = t_householdData(hou,com,act,sys,'PriceFamLab');  
+p_householdData(hou,com, act,sys,'FLab_Price') = t_householdData(hou,com,act,sys,'PriceFamLab');
 
 p_supplyData(act,'prd_prc') = sum((hou,com,sys), t_rawprices(hou,com,act,sys,'prc'))/sum((hou,com,sys), 1$t_rawprices(hou,com,act,sys,'prc'));
 p_supplyData(act,'selast') =  t_selasticities(act,'elas');
+
+*----------------Crop Irrigation requirements at the Base Line(th m3/h/yr)---------
+*--------Original data in mm/m2/yr
+*----For those crops without CIR information the associated figure is:
+*tomato and onions = maize
+*melon = 1.2 * CIR_maize
+*water melon = 1.3 * CIR_maize
+
+*------Comune level----
+p_householdData(hou,com,act,'irr','cir')= (1/100)*t_cir(com,act,'BL');
+p_householdData(hou,com,'chk','irr','cir')=p_householdData(hou,com,'cmb','irr','cir');
+p_householdData(hou,com,'sqh','irr','cir')=p_householdData(hou,com,'mel','irr','cir')*0.8;
+
 
 
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -360,8 +378,6 @@ execute 'gdxxrw.exe ..\results\HouseholdChile_db_3011.gdx o=..\results\Household
 option DECIMALS=1;
 display p_householdData, p_houGdsData, p_consumptionData, p_supplyData;
 $exit
-
-
 
 
 

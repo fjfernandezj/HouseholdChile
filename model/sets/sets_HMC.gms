@@ -121,7 +121,7 @@ set
 set
 var       'variables'             /Area,yld,prd,cons,prc,hrd_lab,fam_lab,TtlLab_Cst,
                                   inpCst,RntCst,TtlCst,srev,gmar,consPrice,gdsCons,
-                                  tot_lab,vcost,selast,prd_prc,HLab_Price,FLab_Price/
+                                  tot_lab,vcost,selast,prd_prc,HLab_Price,FLab_Price,cir/
 
 ;
 
@@ -146,11 +146,11 @@ grn(act) grains
 */wht,oat,ric/
 
 sc(act) spring crops
-/mze,cmb,pot/
+/mze,cmb,pot,chk/
 *gbn and chk no supply elasticities --> original /mze,cmb, gbn, chk, pot/
 
 sv(act) sprig vegetables
-/oni,tom,mel,wtm /
+/oni,tom,mel,sqh/
 * /pea,oni,tom,mel,wtm,cuc,sqh /
 
 oc(act) other crops
@@ -171,11 +171,11 @@ grnj(gds) grains
 */wht,oat,ric/
 
 scj(gds) spring crops
-/mze,cmb,pot/
+/mze,cmb,pot,chk/
 *gbn and chk no supply elasticities --> original /mze,cmb, gbn, chk, pot/
 
 svj(gds) sprig vegetables
-/oni,tom,mel,wtm/
+/oni,tom,mel,sqh/
 */pea,oni,tom,mel,wtm,cuc,sqh /
 
 ocj(gds) other crops

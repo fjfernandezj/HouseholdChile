@@ -65,8 +65,8 @@ X.up(h,a,s)$map_has(h,a,s) = tland;
 *cs.up(h,c,j)= jcons_com(h,c,j);
 *cnsq.up(h,c,j)= sum((a,s),yl(h,c,a,s,j)*x0(h,c,a,s));
 *HLAB.up(h,c) = sum((a,s), labrnt(h,c,a,s)) ;
-*FLAB.up(h) = avFamLab(h)   ;
-*HLAB.l(h) = sum((a,s), labrnt(h,a,s));
+FLAB.fx(h) = avFamLab(h)   ;
+HLAB.l(h) = avHrdLab(h) ;
 
 model basemodel modelo lineal base /
    household_noRisk
@@ -104,6 +104,7 @@ parameter chPMP, cpar;
 *chPMP(h,c,a,s,'sgm') = sgm(h,c,a,s);
 chPMP(h,a,s,'X0')  = x0(h,a,s);
 chPMP(h,a,s,'calib') = x.l(h,a,s);
+chPMP(h,a,s,'diff') = chPMP(h,a,s,'X0') - chPMP(h,a,s,'calib');
 
 *~~~~~~~~~~~~~~~~~~~~~~~~  COST FUNCTION PARAMETERS            ~~~~~~~~~~~~~~~~*
 * mu1
@@ -117,7 +118,18 @@ ALPHACST(h,a,s)$map_has(h,a,s)= (1/(1+BETACST(h,a,s)))*(acst(h,a,s)+mu1(h,a,s))*
 cpar(h,a,s,'alpha')$map_has(h,a,s)  = ALPHACST(h,a,s);
 cpar(h,a,s,'beta')$map_has(h,a,s)   = BETACST(h,a,s);
 
+Parameters  labrep  labor report summary(days);
+labrep(h,"demobs")    = sum((a,s), x0(h,a,s)*labr(a,s));
+labrep(h,"demand")    = sum((a,s), x.l(h,a,s)*labr(a,s));
+labrep(h,"family")    = FLAB.l(h);
+labrep(h,"out")       = FOUT.l(h);
+labrep(h,"TtlFam")    = labrep(h,"family") +  labrep(h,"out") ;
+labrep(h,"hired")     = HLAB.l(h);
+labrep(h,"supply")    = labrep(h,"TtlFam") + labrep(h,"hired");
+labrep(h,"diff")      = labrep(h,"demand") - labrep(h,"supply")  ;
+
+
 *   ---- create gdx file with model data
-display chPMP, cpar;
+display chPMP, cpar, labrep;
 
 

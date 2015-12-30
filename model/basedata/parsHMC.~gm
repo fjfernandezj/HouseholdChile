@@ -70,9 +70,55 @@ avgLab       Average labour per activity and system
 avFamLab     average family labour available per household and commune
 LabWage      Hired labour wage (million $CLP per day)
 owage        Hire-out  wage rate (millions $CLP per day)
-labr         Average Labour requiremet per activity per system
-avHrdLab     Average hired labour per household
 
+
+$ontext
+
+lab          Labor demand per hectare (man days)
+labrnt       Labor rented-in per household-commune crop and system (man days)
+B            Initial resource endowment
+y_oc         Economic output coefficient (yield of activity i)
+sb           Subsidies
+pm           Market prices of goods and tradable factors
+tb           Multiplicative transaction costs of goods (buyer)
+ts           Multiplicative transaction costs of goods (seller)
+acst         Accounting costs
+d            Implicit cost function's parameters estimated with PMP-ME
+Q
+lambda       Implicit marginal costs of tradable factors revealed through PMP approach
+fc           Fixed costs
+
+*Kst          number of state of nature
+
+
+
+Am           Input coefficients (input use of factor f in activity a)
+gamma        Household expenditure function's parameter - les parameter
+beta         Household expenditure function's parameter - les parameter
+P            Poverty line
+Hc           Household composition
+BETACST
+ALPHACST
+cpar
+
+*   ---- base year data commune------
+   yld          "crop yield (tons/h)"
+
+   x0           "crop area (2011) in ha household-commune level"
+
+   w0           "water delivery (2011) in m3 commune level"
+
+   selas        'supply elasticity'
+   delas        'demand elasticity'
+
+   DW           'Gross Water Delivered'
+
+* model data for baseline
+   p_householdData(*,*,*,*,*)   'crop management data household level'
+   p_houGdsData(*,*,*,*,*)      'Goods and Factors household data'
+;
+
+$offtext
 
 *   ---- base year data commune------
    yld          "crop yield (tons/h)"
@@ -114,6 +160,6 @@ avHrdLab     Average hired labour per household
   ;
 
 
-
+  ;
 
 

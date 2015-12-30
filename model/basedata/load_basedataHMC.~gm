@@ -216,6 +216,9 @@ labreq(h,a,s)= labrnt(h,a,s) +  labfam(h,a,s);
 
 totLab = sum((h,a,s), [labrnt(h,a,s) +  labfam(h,a,s)]*x0(h,a,s));
 
+Parameter labr      Average Labour requiremet per activity per system
+          avHrdLab  Average hired labour per household;
+
 labr(a,s)$(sum(h, 1$labreq(h,a,s)) gt  0) =  sum(h, labreq(h,a,s))/ sum(h, 1$labreq(h,a,s));
 
 ** --- average labour input per activity and system
@@ -313,4 +316,10 @@ display x0, tland, thland, icland, w, yld, labreq, labrnt, labfam, totLab, Am, B
 
 
 
+*   ---- crop area (ha) (only activities with gmar >0) household.comunne level-----
+***Note !! --> If we take into account only activities with gmar > 0 subsistence farm types are ignored
+*so we eliminate the condition under wich the statement is executed (i.e.
+*x0(h,c,a,s)$(p_householdData(h,c,a,s,'gmar') gt 0)= p_householdData(h,c,a,s,'area');
 
+*x0(h,c,a,s)= p_householdData(h,c,a,s,'area');
+*x0(h,c,a,'tot')= x0(h,c,a,'dry')+ x0(h,c,a,'irr');
